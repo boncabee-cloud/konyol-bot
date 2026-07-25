@@ -48,6 +48,56 @@ client.on('raw', (d) => {
   client.lavalink.sendRawData(d);
 });
 
+// ── v4.0.8: Graceful shutdown — tutup semua sesi Lavalink sebelum process berhenti ──
+async function gracefulShutdown(signal) {
+  logger.info(`[Shutdown] Menerima signal ${signal} — memulai graceful shutdown...`);
+
+  try {
+    // Hancurkan semua player aktif agar sesi Lavalink ditutup bersih
+    if (client.lavalink) {
+      const players = client.lavalink.players;
+      if (players && players.size > 0) {
+        logger.info(`[Shutdown] Menghentikan ${players.size} player aktif...`);
+        for (const [, player] of players) {
+          try {
+            await player.destroy();
+          } catch (e) {
+            // abaikan error saat shutdown
+          }
+        }
+      }
+
+      // Tutup semua koneksi node Lavalink
+      const nodes = client.lavalink.nodeManager?.nodes;
+      if (nodes && nodes.size > 0) {
+        logger.info(`[Shutdown] Menutup ${nodes.size} node Lavalink...`);
+        for (const [, node] of nodes) {
+          try {
+            await node.destroy();
+          } catch (e) {
+            // abaikan error saat shutdown
+          }
+        }
+      }
+    }
+
+    // Logout dari Discord secara bersih
+    if (client.isReady()) {
+      logger.info('[Shutdown] Logout dari Discord...');
+      await client.destroy();
+    }
+
+    logger.info('[Shutdown] Selesai. Bot berhenti dengan bersih.');
+  } catch (err) {
+    logger.error(`[Shutdown] Error saat shutdown: ${err.message}`);
+  } finally {
+    process.exit(0);
+  }
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
+
 async function start() {
   try {
     await loadCommands(client);
