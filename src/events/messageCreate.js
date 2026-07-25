@@ -6,7 +6,10 @@ const config = require('../config/config');
 const logger = require('../utils/logger');
 
 // Command yang TIDAK mematikan autoplay saat dijalankan
-const AUTOPLAY_SAFE_COMMANDS = new Set(['autoplay', 'play', 'skip', 'volume', 'nowplaying', 'queue']);
+const AUTOPLAY_SAFE_COMMANDS = new Set([
+  'autoplay', 'play', 'skip', 'volume', 'nowplaying', 'queue',
+  'pause', 'resume', 'loop', 'seek', 'shuffle', 'remove', 'clear', 'move', 'filter',
+]);
 
 module.exports = {
   name: 'messageCreate',
