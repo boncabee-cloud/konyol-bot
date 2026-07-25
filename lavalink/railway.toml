@@ -1,0 +1,10 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "lavalink/Dockerfile"
+buildContext = "lavalink"
+
+[deploy]
+startCommand = ""
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

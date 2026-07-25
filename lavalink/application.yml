@@ -9,7 +9,9 @@ plugins:
   lavasrc:
     providers:
       - 'ytsearch:"%ISRC%"'
+      - 'ytmsearch:"%ISRC%"'
       - "ytsearch:%QUERY%"
+      - "ytmsearch:%QUERY%"
       - "scsearch:%QUERY%"
     sources:
       spotify: false
@@ -26,16 +28,17 @@ plugins:
       - MUSIC
       - ANDROID_TESTSUITE
       - WEB
+      - WEBEMBEDDED
       - TVHTML5EMBEDDED
 
 lavalink:
   plugins:
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.1"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.1"
       snapshot: false
     - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.4.1"
       snapshot: false
   server:
-    password: "${LAVALINK_PASSWORD:Ariekonur0}"
+    password: "${LAVALINK_PASSWORD:changeme}"
     sources:
       youtube: false
       bandcamp: true
