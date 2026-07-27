@@ -13,13 +13,11 @@ module.exports = {
         host: process.env.LAVALINK_HOST || 'lavalinkv4.serenetia.com',
         port: parseInt(process.env.LAVALINK_PORT || '443'),
         password: process.env.LAVALINK_PASSWORD || 'https://seretia.link/discord',
-        // Default true — port 443 selalu butuh SSL
         secure: process.env.LAVALINK_SECURE !== 'false',
         selfSigned: process.env.LAVALINK_SELF_SIGNED === 'true',
         retryAmount: 15,
         retryDelay: 5000,
       },
-      // Fallback node — aktif otomatis jika primary down
       {
         id: 'fallback',
         host: process.env.LAVALINK_HOST_2 || 'lavalink.serenetia.com',
@@ -46,7 +44,6 @@ module.exports = {
   music: {
     defaultVolume: parseInt(process.env.DEFAULT_VOLUME || '80'),
     maxQueueSize: 500,
-    // Batas durasi: 2 jam (7200000 ms). 0 = tidak ada batas.
     maxDuration: parseInt(process.env.MAX_DURATION || '7200000'),
     searchPlatform: 'ytsearch',
     leaveOnEmptyDelay: 30000,
