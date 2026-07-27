@@ -68,19 +68,24 @@ function createLavalinkManager(client) {
       username: 'MusicBot',
     },
     playerOptions: {
-      applyVolumeAsFilter: true,
-      // Update posisi lebih jarang untuk track panjang — hemat resource
-      clientBasedPositionUpdateInterval: 500,
-      defaultSearchPlatform: config.music.searchPlatform,
-      volumeDecrementer: 0.75,
-      onDisconnect: {
-        autoReconnect: true,
-        destroyPlayer: false,
-      },
-      onEmptyQueue: {
-        destroyAfterMs: config.music.leaveOnEmptyDelay,
-      },
-    },
+  applyVolumeAsFilter: true,
+  clientBasedPositionUpdateInterval: 500,
+  defaultSearchPlatform: config.music.searchPlatform,
+  volumeDecrementer: 0.75,
+  
+  // ← TAMBAH BAGIAN INI UNTUK SUARA LEBIH JERNIH:
+  normalizationThresholds: {
+    louden: 0.05,
+  },
+  
+  onDisconnect: {
+    autoReconnect: true,
+    destroyPlayer: false,
+  },
+  onEmptyQueue: {
+    destroyAfterMs: config.music.leaveOnEmptyDelay,
+  },
+},
     autoSkip: true,
     autoSkipOnResolveError: true,
     emitNewSongsOnly: true,
