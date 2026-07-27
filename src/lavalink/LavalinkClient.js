@@ -39,7 +39,6 @@ function buildNodes() {
     retryAmount: 50,
     retryDelay: 5000,
     closeOnError: false,
-    // Timeout REST request lebih panjang untuk mendukung lagu durasi panjang (>1 jam)
     requestTimeout: 30000,
   }));
 }
@@ -68,24 +67,18 @@ function createLavalinkManager(client) {
       username: 'MusicBot',
     },
     playerOptions: {
-  applyVolumeAsFilter: true,
-  clientBasedPositionUpdateInterval: 500,
-  defaultSearchPlatform: config.music.searchPlatform,
-  volumeDecrementer: 0.75,
-  
-  // ← TAMBAH BAGIAN INI UNTUK SUARA LEBIH JERNIH:
-  normalizationThresholds: {
-    louden: 0.05,
-  },
-  
-  onDisconnect: {
-    autoReconnect: true,
-    destroyPlayer: false,
-  },
-  onEmptyQueue: {
-    destroyAfterMs: config.music.leaveOnEmptyDelay,
-  },
-},
+      applyVolumeAsFilter: true,
+      clientBasedPositionUpdateInterval: 500,
+      defaultSearchPlatform: config.music.searchPlatform,
+      volumeDecrementer: 0.75,
+      onDisconnect: {
+        autoReconnect: true,
+        destroyPlayer: false,
+      },
+      onEmptyQueue: {
+        destroyAfterMs: config.music.leaveOnEmptyDelay,
+      },
+    },
     autoSkip: true,
     autoSkipOnResolveError: true,
     emitNewSongsOnly: true,
