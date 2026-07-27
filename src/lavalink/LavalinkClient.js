@@ -6,8 +6,8 @@ const { handleNodeFailure, resetNodeFailCount } = require('../utils/lavalinkReco
 /**
  * Apply TLS settings per-node:
  * - secure: false  → plain WebSocket (ws://), no TLS involved
- * - secure: true, selfSigned: false → wss:// with CA-verified cert (default, aman)
- * - secure: true, selfSigned: true  → wss:// dengan self-signed cert, disable verify hanya untuk ini
+ * - secure: true, selfSigned: false → wss:// dengan CA-verified cert (aman)
+ * - secure: true, selfSigned: true  → wss:// dengan self-signed cert
  */
 function applyTlsSettings(nodes) {
   const selfSignedNodes = nodes.filter((n) => n.secure && n.selfSigned);
@@ -39,6 +39,8 @@ function buildNodes() {
     retryAmount: 50,
     retryDelay: 5000,
     closeOnError: false,
+    // Timeout REST request lebih panjang untuk mendukung lagu durasi panjang (>1 jam)
+    requestTimeout: 30000,
   }));
 }
 
@@ -46,7 +48,10 @@ function createLavalinkManager(client) {
   const nodes = buildNodes();
   applyTlsSettings(nodes);
 
-  logger.info(`Configuring ${nodes.length} Lavalink node(s): ${nodes.map((n) => `${n.id} (${n.secure ? 'SSL' : 'no-SSL'}${n.selfSigned ? '/self-signed' : ''})`).join(', ')}`);
+  logger.info(
+    `Configuring ${nodes.length} Lavalink node(s): ` +
+    nodes.map((n) => `${n.id} (${n.secure ? 'SSL' : 'no-SSL'}${n.selfSigned ? '/self-signed' : ''})`).join(', ')
+  );
 
   const manager = new LavalinkManager({
     nodes,
@@ -64,7 +69,8 @@ function createLavalinkManager(client) {
     },
     playerOptions: {
       applyVolumeAsFilter: false,
-      clientBasedPositionUpdateInterval: 100,
+      // Update posisi lebih jarang untuk track panjang — hemat resource
+      clientBasedPositionUpdateInterval: 500,
       defaultSearchPlatform: config.music.searchPlatform,
       volumeDecrementer: 1.0,
       onDisconnect: {

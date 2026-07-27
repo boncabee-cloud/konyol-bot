@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getOrCreatePlayer, search, play, setRadioMode, setSeed, getAutoplay, setAutoplay } = require('../../music/MusicManager');
 const { successEmbed, errorEmbed, createEmbed } = require('../../utils/embeds');
+const { formatDuration } = require('../../utils/embeds');
 const config = require('../../config/config');
 
 function platformLabel(query) {
@@ -64,18 +65,52 @@ async function handlePlay(client, ctx, queryStr) {
       setAutoplay(ctx.guild.id, false);
     }
 
+    const maxDuration = config.music.maxDuration || 0; // 0 = tidak ada batas
     let tracks = [];
     let description = '';
     const platform = platformLabel(query);
     const platformTag = platform ? ` *(${platform})*` : '';
 
     if (result.loadType === 'playlist') {
-      tracks = result.tracks;
+      let allTracks = result.tracks;
+      let skipped = 0;
+
+      // Filter track yang melebihi batas durasi (kecuali stream & maxDuration = 0)
+      if (maxDuration > 0) {
+        const filtered = allTracks.filter((t) => {
+          if (t.info.isStream) return true;
+          if (!t.info.duration || t.info.duration <= maxDuration) return true;
+          skipped++;
+          return false;
+        });
+        allTracks = filtered;
+      }
+
+      if (allTracks.length === 0) {
+        const embed = errorEmbed(
+          `Semua lagu di playlist melebihi batas durasi maksimum **${formatDuration(maxDuration)}**.`
+        );
+        return isInteraction ? ctx.editReply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
+      }
+
+      tracks = allTracks;
       const playlistName = result.playlist?.name || 'Playlist';
       description = `📋 Menambahkan **${tracks.length}** lagu dari playlist [${playlistName}](${query})${platformTag} ke antrean.`;
+      if (skipped > 0) description += `\n⚠️ **${skipped}** lagu dilewati (durasi > ${formatDuration(maxDuration)}).`;
     } else {
-      tracks = [result.tracks[0]];
-      const track = tracks[0];
+      const track = result.tracks[0];
+
+      // Cek durasi untuk single track (skip jika stream / maxDuration = 0)
+      if (maxDuration > 0 && !track.info.isStream && track.info.duration > maxDuration) {
+        const embed = errorEmbed(
+          `❌ Lagu **${track.info.title}** memiliki durasi **${formatDuration(track.info.duration)}** ` +
+          `yang melebihi batas maksimum **${formatDuration(maxDuration)}** (2 jam).\n` +
+          `Coba lagu yang lebih pendek.`
+        );
+        return isInteraction ? ctx.editReply({ embeds: [embed] }) : ctx.reply({ embeds: [embed] });
+      }
+
+      tracks = [track];
       description = `🎵 Menambahkan [**${track.info.title}**](${track.info.uri}) oleh **${track.info.author}**${platformTag} ke antrean.`;
     }
 

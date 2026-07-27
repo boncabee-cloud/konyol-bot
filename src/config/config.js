@@ -13,10 +13,21 @@ module.exports = {
         host: process.env.LAVALINK_HOST || 'lavalinkv4.serenetia.com',
         port: parseInt(process.env.LAVALINK_PORT || '443'),
         password: process.env.LAVALINK_PASSWORD || 'https://seretia.link/discord',
-        secure: process.env.LAVALINK_SECURE === 'true',
-        // Set true jika server pakai self-signed certificate (bukan cert dari CA resmi)
+        // Default true — port 443 selalu butuh SSL
+        secure: process.env.LAVALINK_SECURE !== 'false',
         selfSigned: process.env.LAVALINK_SELF_SIGNED === 'true',
-        retryAmount: 10,
+        retryAmount: 15,
+        retryDelay: 5000,
+      },
+      // Fallback node — aktif otomatis jika primary down
+      {
+        id: 'fallback',
+        host: process.env.LAVALINK_HOST_2 || 'lavalink.serenetia.com',
+        port: parseInt(process.env.LAVALINK_PORT_2 || '443'),
+        password: process.env.LAVALINK_PASSWORD_2 || 'https://dsc.gg/srnti',
+        secure: process.env.LAVALINK_SECURE_2 !== 'false',
+        selfSigned: false,
+        retryAmount: 15,
         retryDelay: 5000,
       },
     ],
@@ -24,17 +35,19 @@ module.exports = {
 
   radio: {
     stations: [
-      { name: 'Lofi Girl',       url: 'https://ice6.somafm.com/lush-128-mp3',       emoji: '📻' },
-      { name: 'Synthwave Radio', url: 'https://ice6.somafm.com/synphaera-128-mp3',  emoji: '🌆' },
-      { name: 'Jazz & Blues',    url: 'https://ice4.somafm.com/jazz24-128-mp3',     emoji: '🎷' },
-      { name: 'Chillhop',       url: 'https://ice6.somafm.com/groovesalad-128-mp3', emoji: '🐸' },
-      { name: 'Deep Focus',      url: 'https://ice6.somafm.com/dronezone-128-mp3',  emoji: '🧘' },
+      { name: 'Lofi Girl',       url: 'https://ice6.somafm.com/lush-128-mp3',        emoji: '📻' },
+      { name: 'Synthwave Radio', url: 'https://ice6.somafm.com/synphaera-128-mp3',   emoji: '🌆' },
+      { name: 'Jazz & Blues',    url: 'https://ice4.somafm.com/jazz24-128-mp3',      emoji: '🎷' },
+      { name: 'Chillhop',        url: 'https://ice6.somafm.com/groovesalad-128-mp3', emoji: '🐸' },
+      { name: 'Deep Focus',      url: 'https://ice6.somafm.com/dronezone-128-mp3',   emoji: '🧘' },
     ],
   },
 
   music: {
     defaultVolume: parseInt(process.env.DEFAULT_VOLUME || '80'),
     maxQueueSize: 500,
+    // Batas durasi: 2 jam (7200000 ms). 0 = tidak ada batas.
+    maxDuration: parseInt(process.env.MAX_DURATION || '7200000'),
     searchPlatform: 'ytsearch',
     leaveOnEmptyDelay: 30000,
     leaveOnEndDelay: 30000,

@@ -1,6 +1,8 @@
 const logger = require('./logger');
 
-const FAIL_THRESHOLD = 5;
+// Naikkan threshold — biarkan lavalink-client retry + fallback node dulu
+// sebelum trigger Railway redeploy (yang tidak berguna jika node external mati)
+const FAIL_THRESHOLD = 20;
 const REDEPLOY_COOLDOWN_MS = 10 * 60 * 1000; // 10 menit
 
 const failCounts = new Map();
