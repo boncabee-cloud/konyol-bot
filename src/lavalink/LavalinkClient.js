@@ -68,11 +68,11 @@ function createLavalinkManager(client) {
       username: 'MusicBot',
     },
     playerOptions: {
-      applyVolumeAsFilter: false,
+      applyVolumeAsFilter: true,
       // Update posisi lebih jarang untuk track panjang — hemat resource
       clientBasedPositionUpdateInterval: 500,
       defaultSearchPlatform: config.music.searchPlatform,
-      volumeDecrementer: 1.0,
+      volumeDecrementer: 0.75,
       onDisconnect: {
         autoReconnect: true,
         destroyPlayer: false,
