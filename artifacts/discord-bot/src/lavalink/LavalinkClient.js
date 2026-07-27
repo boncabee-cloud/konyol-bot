@@ -12,6 +12,7 @@ function buildNodes() {
     retryAmount: 50,
     retryDelay: 5000,
     closeOnError: false,
+    requestTimeout: 30000,
   }));
 }
 
@@ -34,10 +35,10 @@ function createLavalinkManager(client) {
       username: 'MusicBot',
     },
     playerOptions: {
-      applyVolumeAsFilter: false,
-      clientBasedPositionUpdateInterval: 100,
+      applyVolumeAsFilter: true,
+      clientBasedPositionUpdateInterval: 500,
       defaultSearchPlatform: config.music.searchPlatform,
-      volumeDecrementer: 1.0,
+      volumeDecrementer: 0.75,
       onDisconnect: {
         autoReconnect: true,
         destroyPlayer: false,
