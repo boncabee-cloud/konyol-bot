@@ -51,7 +51,7 @@ module.exports = {
     searchPlatform: 'ytsearch',
     leaveOnEmptyDelay: 30000,
     leaveOnEndDelay: 30000,
-    voiceChannelBitrate: 256000,
+    voiceChannelBitrate: 320000,
   },
 
   cooldowns: {
