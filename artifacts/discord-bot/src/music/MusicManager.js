@@ -35,7 +35,7 @@ async function getOrCreatePlayer(client, guildId, voiceChannelId, textChannelId)
       selfDeaf: true,
       selfMute: false,
       volume: config.music.defaultVolume,
-      instaUpdateFiltersFix: false,
+      instaUpdateFiltersFix: true,
     });
   } else {
     // Jika bot sudah terhubung ke voice channel lain, tolak — jangan berpindah
