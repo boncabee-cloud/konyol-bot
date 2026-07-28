@@ -56,15 +56,15 @@ lavalink:
       local: false
     filters:
       volume: true
-      equalizer: true
-      karaoke: true
-      timescale: true
-      tremolo: true
-      vibrato: true
-      distortion: true
-      rotation: true
-      channelMix: true
-      lowPass: true
+      equalizer: false
+      karaoke: false
+      timescale: false
+      tremolo: false
+      vibrato: false
+      distortion: false
+      rotation: false
+      channelMix: false
+      lowPass: false
     # ── v4.0.8: Non-allocating frame buffers (hemat memori server) ──
     nonAllocating: true
     bufferDurationMs: 200
